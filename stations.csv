@@ -1,0 +1,21 @@
+station_id,city,country,lat,lon,source
+bangkok_thailand,Bangkok,Thailand,,,kaggle
+istanbul_turkey,Istanbul,Turkey,,,kaggle
+rio_de_janeiro_brazil,Rio de Janeiro,Brazil,,,kaggle
+mumbai_india,Mumbai,India,,,kaggle
+paris_france,Paris,France,,,kaggle
+los_angeles_usa,Los Angeles,USA,,,kaggle
+tokyo_japan,Tokyo,Japan,,,kaggle
+new_york_usa,New York,USA,,,kaggle
+london_uk,London,UK,,,kaggle
+seoul_south korea,Seoul,South Korea,,,kaggle
+cairo_egypt,Cairo,Egypt,,,kaggle
+mexico_city_mexico,Mexico City,Mexico,,,kaggle
+berlin_germany,Berlin,Germany,,,kaggle
+beijing_china,Beijing,China,,,kaggle
+sydney_australia,Sydney,Australia,,,kaggle
+dubai_uae,Dubai,UAE,,,kaggle
+toronto_canada,Toronto,Canada,,,kaggle
+madrid_spain,Madrid,Spain,,,kaggle
+johannesburg_south africa,Johannesburg,South Africa,,,kaggle
+moscow_russia,Moscow,Russia,,,kaggle
