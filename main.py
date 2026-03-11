@@ -6,9 +6,8 @@ import asyncpg
 import httpx
 from dotenv import load_dotenv
 from fastapi import Depends, FastAPI, HTTPException, Query, status
-from fastapi.security import HTTPAuthorizationCredentials, HTTPBearer
-from jose import JWTError, jwt
-from pydantic import BaseModel
+from jose import jwt
+from app.core.auth import TokenPayload, require_admin
 
 from app.models.schemas import (
     AnomalyResponse,
@@ -36,34 +35,10 @@ app = FastAPI(
     description="A UK-focused environmental analytics API providing climate risk scoring, anomaly detection, trend analysis, station comparison, and live air-quality ingestion from OpenWeather.",
     version="1.0.0"
 )
-security = HTTPBearer()
-
 
 @app.get("/")
 def root():
     return {"status": "ok", "docs": "/docs"}
-
-
-# ---------- Auth / roles ----------
-class TokenPayload(BaseModel):
-    sub: str
-    role: Literal["admin", "user"]
-
-
-def decode_token(creds: HTTPAuthorizationCredentials = Depends(security)) -> TokenPayload:
-    token = creds.credentials
-    try:
-        payload = jwt.decode(token, JWT_SECRET, algorithms=[JWT_ALG])
-        return TokenPayload(**payload)
-    except (JWTError, TypeError, ValueError):
-        raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Invalid token")
-
-
-def require_admin(tp: TokenPayload = Depends(decode_token)) -> TokenPayload:
-    if tp.role != "admin":
-        raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="Admin role required")
-    return tp
-
 
 # ---------- DB ----------
 @app.on_event("startup")
