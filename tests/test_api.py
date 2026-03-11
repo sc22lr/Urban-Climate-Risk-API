@@ -37,3 +37,10 @@ def test_compare_endpoint():
         assert response.status_code == 200
         data = response.json()
         assert "stations" in data
+
+def test_health():
+    with TestClient(app) as client:
+        response = client.get("/health")
+        assert response.status_code == 200
+        data = response.json()
+        assert "status" in data

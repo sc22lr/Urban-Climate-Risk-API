@@ -4,7 +4,7 @@ from dotenv import load_dotenv
 from fastapi import FastAPI
 
 from app.db.database import shutdown, startup
-from app.routes import auth, stations, observations, analytics, ingestion
+from app.routes import auth, stations, observations, analytics, ingestion, system
 
 load_dotenv() 
 
@@ -44,3 +44,4 @@ app.include_router(stations.router)
 app.include_router(observations.router)
 app.include_router(analytics.router)
 app.include_router(ingestion.router)
+app.include_router(system.router)
