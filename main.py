@@ -2,12 +2,12 @@ import os
 from datetime import datetime, timezone
 from typing import Literal, Optional
 
-import asyncpg
 import httpx
 from dotenv import load_dotenv
 from fastapi import Depends, FastAPI, HTTPException, Query, status
 from jose import jwt
 from app.core.auth import TokenPayload, require_admin
+from app.db.database import shutdown, startup
 
 from app.models.schemas import (
     AnomalyResponse,
@@ -40,23 +40,14 @@ app = FastAPI(
 def root():
     return {"status": "ok", "docs": "/docs"}
 
-# ---------- DB ----------
 @app.on_event("startup")
-async def startup():
-    app.state.pool = await asyncpg.create_pool(
-        user=os.getenv("PGUSER", "postgres"),
-        password=os.getenv("PGPASSWORD"),
-        database=os.getenv("PGDATABASE", "climate_api"),
-        host=os.getenv("PGHOST", "localhost"),
-        port=int(os.getenv("PGPORT", "5432")),
-        min_size=1,
-        max_size=5,
-    )
+async def on_startup():
+    await startup(app)
 
 
 @app.on_event("shutdown")
-async def shutdown():
-    await app.state.pool.close()
+async def on_shutdown():
+    await shutdown(app)
 
 
 # ---------- Helpers ----------
