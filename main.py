@@ -6,7 +6,7 @@ from fastapi import FastAPI
 from app.db.database import shutdown, startup
 from app.routes import auth, stations, observations, analytics, ingestion
 
-load_dotenv()
+load_dotenv() 
 
 OPENWEATHER_API_KEY = os.getenv("OPENWEATHER_API_KEY")
 if not OPENWEATHER_API_KEY:

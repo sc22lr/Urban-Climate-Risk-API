@@ -10,7 +10,7 @@ router = APIRouter(tags=["Observations"])
 @router.get("/observations", response_model=list[ObservationOut])
 async def list_observations(
     station_id: Optional[str] = None,
-    limit: int = Query(50, ge=1, le=500),
+    limit: int = Query(50, ge=1, le=500), 
 ):
     from main import app
 
