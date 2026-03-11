@@ -12,10 +12,19 @@ OPENWEATHER_API_KEY = os.getenv("OPENWEATHER_API_KEY")
 if not OPENWEATHER_API_KEY:
     raise RuntimeError("OPENWEATHER_API_KEY missing in .env")
 
+tags_metadata = [
+    {"name": "Auth", "description": "Authentication and token generation"},
+    {"name": "Stations", "description": "Manage air quality monitoring stations"},
+    {"name": "Observations", "description": "Retrieve air pollution observations"},
+    {"name": "Analytics", "description": "Environmental analytics and anomaly detection"},
+    {"name": "Ingestion", "description": "External air quality data ingestion"},
+]
+
 app = FastAPI(
     title="Urban Climate Risk & Anomaly Intelligence API (UK)",
-    description="A UK-focused environmental analytics API providing climate risk scoring, anomaly detection, trend analysis, station comparison, and live air-quality ingestion from OpenWeather.",
+    description="API for analysing urban air quality data using environmental risk scoring, anomaly detection, and trend analysis.",
     version="1.0.0",
+    openapi_tags=tags_metadata
 )
 
 @app.get("/")
