@@ -22,11 +22,26 @@ class IngestResult(BaseModel):
     so2: Optional[float] = None
     co: Optional[float] = None
     o3: Optional[float] = None
-    inserted: bool = Field(
-        ...,
-        description="True if a new observation row was inserted; false if deduped by unique constraint",
-    )
+    inserted: bool = Field(..., description="True if a new observation row was inserted; false if deduped by unique constraint")
 
+    class Config:
+        json_schema_extra = {
+            "example": {
+                "station_id": "manchester_uk",
+                "city": "Manchester",
+                "country": "UK",
+                "lat": 53.4808,
+                "lon": -2.2426,
+                "observed_at_utc": "2026-03-13T12:00:00Z",
+                "pm25": 11.7,
+                "pm10": 18.3,
+                "no2": 9.6,
+                "so2": 1.5,
+                "co": 210.2,
+                "o3": 71.4,
+                "inserted": True
+            }
+        }
 
 class StationOut(BaseModel):
     station_id: str
@@ -44,6 +59,18 @@ class StationCreate(BaseModel):
     lat: Optional[float] = None
     lon: Optional[float] = None
     source: str = "manual"
+
+    class Config:
+        json_schema_extra = {
+            "example": {
+                "station_id": "leeds_uk",
+                "city": "Leeds",
+                "country": "UK",
+                "lat": 53.8008,
+                "lon": -1.5491,
+                "source": "manual"
+            }
+        }
 
 
 class ObservationOut(BaseModel):
@@ -67,6 +94,19 @@ class RiskScoreOut(BaseModel):
     o3: Optional[float]
     risk_score: float
     category: str
+
+    class Config:
+        json_schema_extra = {
+            "example": {
+                "station_id": "london_uk",
+                "observed_at_utc": "2023-12-25T00:00:00Z",
+                "pm25": 42.5,
+                "no2": 31.8,
+                "o3": 67.4,
+                "risk_score": 53.26,
+                "category": "Medium"
+            }
+        }
 
 
 class AnomalyItem(BaseModel):
