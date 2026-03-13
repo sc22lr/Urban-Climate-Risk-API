@@ -10,7 +10,12 @@ from app.services.openweather import fetch_air_pollution, geocode_city
 router = APIRouter(prefix="/ingest", tags=["Ingestion"])
 
 
-@router.post("/openweather", response_model=IngestResult)
+@router.post(
+    "/openweather",
+    response_model=IngestResult,
+    summary="Ingest air pollution data from OpenWeather",
+    description="Fetches real-time pollution data for a city using the OpenWeather API and stores it in the database."
+)
 async def ingest_openweather(
     city: str = Query(..., min_length=2, max_length=80),
     _: TokenPayload = Depends(require_admin),

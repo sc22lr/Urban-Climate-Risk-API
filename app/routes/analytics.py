@@ -7,7 +7,12 @@ from app.models.schemas import AnomalyResponse, CompareResponse, RiskScoreOut, T
 router = APIRouter(tags=["Analytics"])
 
 
-@router.get("/risk/score", response_model=RiskScoreOut)
+@router.get(
+    "/risk/score",
+    response_model=RiskScoreOut,
+    summary="Calculate environmental risk score",
+    description="Computes a pollution risk score using PM2.5, NO2 and O3 measurements from the most recent observation."
+)
 async def risk_score(station_id: str):
     from main import app
 
@@ -52,7 +57,12 @@ async def risk_score(station_id: str):
     }
 
 
-@router.get("/analytics/anomalies", response_model=AnomalyResponse)
+@router.get(
+    "/analytics/anomalies",
+    response_model=AnomalyResponse,
+    summary="Detect anomalous pollution values",
+    description="Identifies unusual pollutant readings for a station using z-score based anomaly detection."
+)
 async def detect_anomalies(
     station_id: str,
     metric: Literal["pm25", "pm10", "no2", "so2", "co", "o3"],
@@ -115,7 +125,12 @@ async def detect_anomalies(
     }
 
 
-@router.get("/analytics/trends", response_model=TrendResponse)
+@router.get(
+    "/analytics/trends",
+    response_model=TrendResponse,
+    summary="Retrieve pollution trends",
+    description="Returns a chronological series of pollutant values for a station together with min, max, and average statistics."
+)
 async def get_trends(
     station_id: str,
     metric: Literal["pm25", "pm10", "no2", "so2", "co", "o3"],
@@ -155,7 +170,12 @@ async def get_trends(
     }
 
 
-@router.get("/analytics/compare", response_model=CompareResponse)
+@router.get(
+    "/analytics/compare",
+    response_model=CompareResponse,
+    summary="Compare stations by pollutant level",
+    description="Compares stations using average, minimum, and maximum pollutant values."
+)
 async def compare_stations(
     metric: Literal["pm25", "pm10", "no2", "so2", "co", "o3"],
 ):

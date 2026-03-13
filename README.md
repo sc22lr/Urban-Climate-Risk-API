@@ -1,5 +1,11 @@
 # Urban Climate Risk & Anomaly Intelligence API
 
+![Python](https://img.shields.io/badge/Python-3.10+-blue)
+![FastAPI](https://img.shields.io/badge/FastAPI-API-green)
+![PostgreSQL](https://img.shields.io/badge/PostgreSQL-Database-blue)
+![Tests](https://img.shields.io/badge/tests-pytest-success)
+![License](https://img.shields.io/badge/license-academic-lightgrey)
+
 A RESTful API for analysing urban air quality data across the United Kingdom.
 The system ingests pollution data from external sources, stores observations in PostgreSQL, and provides environmental analytics including risk scoring, anomaly detection, and trend analysis.
 

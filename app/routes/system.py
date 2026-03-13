@@ -8,7 +8,11 @@ def root():
     return {"status": "ok", "docs": "/docs"}
 
 
-@router.get("/health")
+@router.get(
+    "/health",
+    summary="Check API and database health",
+    description="Returns API health status and confirms database connectivity."
+)   
 async def health():
     from main import app
 
