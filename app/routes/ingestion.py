@@ -1,7 +1,8 @@
 from datetime import datetime, timezone
+import uuid
 
 import httpx
-from fastapi import APIRouter, Depends, Query
+from fastapi import APIRouter, Depends, Query, Request
 
 from app.core.auth import TokenPayload, require_admin
 from app.models.schemas import IngestResult
@@ -17,11 +18,11 @@ router = APIRouter(prefix="/ingest", tags=["Ingestion"])
     description="Fetches real-time pollution data for a city using the OpenWeather API and stores it in the database."
 )
 async def ingest_openweather(
+    request: Request,
     city: str = Query(..., min_length=2, max_length=80),
     _: TokenPayload = Depends(require_admin),
 ):
-    from main import app
-
+    app = request.app
     station_id = f"{city.strip().lower().replace(' ', '_')}_uk"
 
     async with httpx.AsyncClient() as client:
@@ -44,12 +45,16 @@ async def ingest_openweather(
             INSERT INTO stations_uk (station_id, city, country, lat, lon, source)
             VALUES ($1, $2, 'UK', $3, $4, 'openweather')
             ON CONFLICT (station_id)
-            DO UPDATE SET lat = EXCLUDED.lat, lon = EXCLUDED.lon, source = EXCLUDED.source, city = EXCLUDED.city, country = EXCLUDED.country;
+            DO UPDATE SET
+                lat = EXCLUDED.lat,
+                lon = EXCLUDED.lon,
+                source = EXCLUDED.source,
+                city = EXCLUDED.city,
+                country = EXCLUDED.country;
             """,
             station_id, city, lat, lon,
         )
 
-        import uuid
         obs_id = uuid.uuid4()
 
         result = await conn.execute(
