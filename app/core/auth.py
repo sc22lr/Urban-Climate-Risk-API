@@ -1,9 +1,13 @@
+import os
 from typing import Literal
 
 from fastapi import Depends, HTTPException, status
 from fastapi.security import HTTPAuthorizationCredentials, HTTPBearer
 from jose import JWTError, jwt
 from pydantic import BaseModel
+
+JWT_SECRET = os.getenv("JWT_SECRET", "change_me")
+JWT_ALG = os.getenv("JWT_ALG", "HS256")
 
 
 class TokenPayload(BaseModel):
@@ -14,17 +18,16 @@ class TokenPayload(BaseModel):
 security = HTTPBearer()
 
 
+def create_token(payload: dict) -> str:
+    return jwt.encode(payload, JWT_SECRET, algorithm=JWT_ALG)
+
+
 def decode_token(
     creds: HTTPAuthorizationCredentials = Depends(security),
 ) -> TokenPayload:
-    import os
-
-    jwt_secret = os.getenv("JWT_SECRET", "change_me")
-    jwt_alg = os.getenv("JWT_ALG", "HS256")
-
     token = creds.credentials
     try:
-        payload = jwt.decode(token, jwt_secret, algorithms=[jwt_alg])
+        payload = jwt.decode(token, JWT_SECRET, algorithms=[JWT_ALG])
         return TokenPayload(**payload)
     except (JWTError, TypeError, ValueError):
         raise HTTPException(
