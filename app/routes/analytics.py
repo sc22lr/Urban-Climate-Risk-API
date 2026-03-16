@@ -1,14 +1,14 @@
 from typing import Literal
 
-from fastapi import APIRouter, HTTPException, Query
+from fastapi import APIRouter, HTTPException, Query, Request
 
 from app.models.schemas import AnomalyResponse, CompareResponse, RiskScoreOut, TrendResponse
 
-router = APIRouter(tags=["Analytics"])
+router = APIRouter(prefix="/analytics", tags=["Analytics"])
 
 
 @router.get(
-    "/risk/score",
+    "/risk-score",
     response_model=RiskScoreOut,
     summary="Calculate environmental risk score",
     description="Computes a pollution risk score using PM2.5, NO2 and O3 measurements from the most recent observation."
@@ -58,7 +58,7 @@ async def risk_score(station_id: str):
 
 
 @router.get(
-    "/analytics/anomalies",
+    "/anomalies",
     response_model=AnomalyResponse,
     summary="Detect anomalous pollution values",
     description="Identifies unusual pollutant readings for a station using z-score based anomaly detection."
@@ -126,7 +126,7 @@ async def detect_anomalies(
 
 
 @router.get(
-    "/analytics/trends",
+    "/trends",
     response_model=TrendResponse,
     summary="Retrieve pollution trends",
     description="Returns a chronological series of pollutant values for a station together with min, max, and average statistics."
@@ -171,7 +171,7 @@ async def get_trends(
 
 
 @router.get(
-    "/analytics/compare",
+    "/compare",
     response_model=CompareResponse,
     summary="Compare stations by pollutant level",
     description="Compares stations using average, minimum, and maximum pollutant values."
@@ -215,3 +215,28 @@ async def compare_stations(
             for r in rows
         ]
     }
+
+@router.get(
+    "/summary",
+    summary="Dataset summary statistics",
+    description="Returns overall statistics about the environmental dataset including station count, observation count, time coverage and average pollutant levels."
+)
+async def dataset_summary(request: Request):
+    app = request.app
+
+    async with app.state.pool.acquire() as conn:
+        row = await conn.fetchrow(
+            """
+            SELECT
+                COUNT(DISTINCT station_id) AS stations,
+                COUNT(*) AS observations,
+                MIN(observed_at_utc) AS earliest,
+                MAX(observed_at_utc) AS latest,
+                AVG(pm25) AS avg_pm25,
+                AVG(pm10) AS avg_pm10,
+                AVG(no2) AS avg_no2
+            FROM observations_uk
+            """
+        )
+
+    return dict(row)
