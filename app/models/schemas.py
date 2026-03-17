@@ -73,6 +73,25 @@ class StationCreate(BaseModel):
         }
 
 
+class StationUpdate(BaseModel):
+    city: Optional[str] = None
+    country: Optional[str] = None
+    lat: Optional[float] = None
+    lon: Optional[float] = None
+    source: Optional[str] = None
+
+    class Config:
+        json_schema_extra = {
+            "example": {
+                "city": "Leeds",
+                "country": "UK",
+                "lat": 53.8008,
+                "lon": -1.5491,
+                "source": "manual"
+            }
+        }
+
+
 class ObservationOut(BaseModel):
     observation_id: UUID
     station_id: str
