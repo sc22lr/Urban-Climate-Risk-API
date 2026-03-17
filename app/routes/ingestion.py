@@ -14,6 +14,7 @@ router = APIRouter(prefix="/ingest", tags=["Ingestion"])
 @router.post(
     "/openweather",
     response_model=IngestResult,
+    status_code=201,
     summary="Ingest air pollution data from OpenWeather",
     description="Fetches real-time pollution data for a city using the OpenWeather API and stores it in the database."
 )
