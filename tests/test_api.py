@@ -108,10 +108,78 @@ def test_ingest_with_valid_admin_token():
             params={"city": "York"},
             headers={"Authorization": f"Bearer {token}"},
         )
-        assert response.status_code == 200
+        assert response.status_code == 201
         data = response.json()
         assert data["city"] == "York"
         assert "pm25" in data
+
+
+def test_update_station_requires_token():
+    with TestClient(app) as client:
+        response = client.put(
+            "/stations/london_uk",
+            json={"city": "London Updated"},
+        )
+        assert response.status_code == 401
+
+
+def test_update_station_not_found():
+    with TestClient(app) as client:
+        token = get_dev_token(client)
+        response = client.put(
+            "/stations/nonexistent_station_xyz",
+            json={"city": "Nowhere"},
+            headers={"Authorization": f"Bearer {token}"},
+        )
+        assert response.status_code == 404
+
+
+def test_create_update_delete_station():
+    with TestClient(app) as client:
+        token = get_dev_token(client)
+        headers = {"Authorization": f"Bearer {token}"}
+
+        # Create
+        create_resp = client.post(
+            "/stations",
+            json={
+                "station_id": "test_station_comp3011",
+                "city": "TestCity",
+                "country": "UK",
+                "lat": 52.0,
+                "lon": -1.0,
+                "source": "manual",
+            },
+            headers=headers,
+        )
+        assert create_resp.status_code == 201
+        assert create_resp.json()["station_id"] == "test_station_comp3011"
+
+        # Update
+        update_resp = client.put(
+            "/stations/test_station_comp3011",
+            json={"city": "TestCityUpdated"},
+            headers=headers,
+        )
+        assert update_resp.status_code == 200
+        assert update_resp.json()["city"] == "TestCityUpdated"
+
+        # Delete
+        delete_resp = client.delete(
+            "/stations/test_station_comp3011",
+            headers=headers,
+        )
+        assert delete_resp.status_code == 204
+
+
+def test_delete_station_not_found():
+    with TestClient(app) as client:
+        token = get_dev_token(client)
+        response = client.delete(
+            "/stations/nonexistent_station_xyz",
+            headers={"Authorization": f"Bearer {token}"},
+        )
+        assert response.status_code == 404
 
 def test_risk_score_endpoint():
     with TestClient(app) as client:
