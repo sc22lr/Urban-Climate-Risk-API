@@ -1,8 +1,9 @@
 fastapi
-uvicorn
+uvicorn[standard]
 asyncpg
 httpx
 python-dotenv
 python-jose
 pydantic
 pytest
+mcp
