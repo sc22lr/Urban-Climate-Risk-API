@@ -69,13 +69,27 @@ tests/
 └── test_api.py              # Automated API tests (14 tests)
 
 main.py                      # Application entry point
+mcp_server.py                # MCP server for AI assistant integration
 Climate.sql                  # Database schema (run this first)
 requirements.txt             # Python dependencies
 ```
 
 ---
 
-## Installation & Setup
+## Live Deployment
+
+The API is live on Render.com:
+
+| | URL |
+|---|---|
+| **API** | https://urban-climate-risk-api.onrender.com |
+| **Swagger UI** | https://urban-climate-risk-api.onrender.com/docs |
+
+> **Note:** The free tier spins down after inactivity — the first request may take 30–60 seconds to wake up.
+
+---
+
+## Local Installation & Setup
 
 ### 1. Clone the repository
 
@@ -249,6 +263,36 @@ curl "http://127.0.0.1:8000/analytics/risk-score?station_id=london_uk"
 **Detect anomalies:**
 ```bash
 curl "http://127.0.0.1:8000/analytics/anomalies?station_id=london_uk&metric=pm25&threshold=2.0"
+```
+
+---
+
+## MCP Server
+
+The API includes an MCP (Model Context Protocol) server that exposes air quality tools for AI assistants such as Claude.
+
+### Available Tools
+
+| Tool | Description |
+| ---- | ----------- |
+| `get_stations` | List all monitoring stations |
+| `get_observations` | Retrieve pollution observations |
+| `get_risk_score` | Environmental risk score for a station |
+| `detect_anomalies` | Z-score anomaly detection for a pollutant |
+| `get_trends` | Time-series trend analysis |
+| `compare_stations` | Cross-city pollutant comparison |
+| `get_dataset_summary` | Dataset-wide summary statistics |
+
+### Running the MCP Server
+
+Start the API first, then in a separate terminal:
+
+```bash
+# Local
+python mcp_server.py
+
+# Against live deployment
+API_BASE_URL=https://urban-climate-risk-api.onrender.com python mcp_server.py
 ```
 
 ---
