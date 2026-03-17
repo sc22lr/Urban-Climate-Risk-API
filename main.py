@@ -15,6 +15,7 @@ tags_metadata = [
     {"name": "Observations", "description": "Retrieve air pollution observations"},
     {"name": "Analytics", "description": "Environmental analytics and anomaly detection"},
     {"name": "Ingestion", "description": "External air quality data ingestion"},
+    {"name": "System", "description": "System-level operations and maintenance"}
 ]
 
 app = FastAPI(
